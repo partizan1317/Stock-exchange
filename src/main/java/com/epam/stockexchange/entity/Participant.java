@@ -18,16 +18,27 @@ public class Participant implements Runnable{
     private static final Random decisionMaker = new Random();
     private static final double MINIMUM_TRANSACTION_SIZE = 0.01;
 
-    private final int id;
-    private BigDecimal usd = new BigDecimal(0).setScale(2, RoundingMode.DOWN);
-    private BigDecimal eur = new BigDecimal(0).setScale(2, RoundingMode.DOWN);
-    private BigDecimal byn = new BigDecimal(0).setScale(2, RoundingMode.DOWN);
+    private int id;
+    private BigDecimal usd;
+    private BigDecimal eur;
+    private BigDecimal byn;
+
+    public Participant() {
+    }
 
     public Participant(int id, BigDecimal usd, BigDecimal eur, BigDecimal byn) {
         this.id = id;
         this.usd = usd.setScale(2, RoundingMode.DOWN);
         this.eur = eur.setScale(2,RoundingMode.DOWN);
         this.byn = byn.setScale(2, RoundingMode.DOWN);
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setUsd(BigDecimal usd) {

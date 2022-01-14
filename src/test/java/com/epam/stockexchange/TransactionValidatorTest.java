@@ -21,7 +21,7 @@ public class TransactionValidatorTest {
         //given
         TransactionType transactionType = TransactionType.BYN_TO_EUR;
         BigDecimal amountToGive = BigDecimal.valueOf(450.75);
-        BigDecimal amountToReceive = BigDecimal.valueOf(1500.20);
+        BigDecimal amountToReceive = BigDecimal.valueOf(400.20);
         //when
         TRANSACTION_VALIDATOR.validateTransaction(FIRST_PARTICIPANT, SECOND_PARTICIPANT, transactionType, amountToGive, amountToReceive);
         //then

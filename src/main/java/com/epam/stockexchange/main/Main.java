@@ -24,7 +24,6 @@ public class Main {
     private static void programExecution() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-
             List<Participant> participants;
             participants = objectMapper.readValue(new File(PARTICIPANTS_FILE_PATH), new TypeReference<List<Participant>>() {
             });
