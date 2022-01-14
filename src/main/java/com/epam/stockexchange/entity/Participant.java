@@ -1,5 +1,8 @@
 package com.epam.stockexchange.entity;
 
+import com.epam.stockexchange.exception.TransactionException;
+import com.epam.stockexchange.exchangesystem.StockExchangePlatform;
+import com.epam.stockexchange.exchangesystem.TransactionType;
 import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,10 +30,89 @@ public class Participant implements Runnable{
         this.byn = byn.setScale(2, RoundingMode.DOWN);
     }
 
+    public void setUsd(BigDecimal usd) {
+        this.usd = usd;
+    }
+
+    public void setEur(BigDecimal eur) {
+        this.eur = eur;
+    }
+
+    public void setByn(BigDecimal byn) {
+        this.byn = byn;
+    }
+
+    public BigDecimal getUsd() {
+        return usd;
+    }
+
+    public BigDecimal getEur() {
+        return eur;
+    }
+
+    public BigDecimal getByn() {
+        return byn;
+    }
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException();
+        StockExchangePlatform exchangePlatform = StockExchangePlatform.getInstance();
+        exchangePlatform.registerParticipant(this);
+        while (true) {
+            TransactionType transactionToMake = TransactionType.values()[decisionMaker
+                    .nextInt(TransactionType.values()
+                            .length)];
+            BigDecimal maximumAvailableOfCurrency;
+            switch (transactionToMake) {
+                case BYN_TO_EUR:
+                case BYN_TO_USD:
+                    maximumAvailableOfCurrency = byn;
+                    break;
+                case EUR_TO_BYN:
+                case EUR_TO_USD:
+                    maximumAvailableOfCurrency = eur;
+                    break;
+                case USD_TO_BYN:
+                case USD_TO_EUR:
+                    maximumAvailableOfCurrency = usd;
+                    break;
+                default:
+                    maximumAvailableOfCurrency = BigDecimal.valueOf(0).setScale(2, RoundingMode.DOWN);
+                    break;
+            }
+            BigDecimal amountToGive = new BigDecimal(MINIMUM_TRANSACTION_SIZE + (maximumAvailableOfCurrency.doubleValue() - MINIMUM_TRANSACTION_SIZE) * decisionMaker.nextDouble()).setScale(2, RoundingMode.DOWN);
+            BigDecimal amountToReceive = amountToGive;
+            switch (transactionToMake) {
+                case BYN_TO_EUR:
+                    amountToReceive = amountToReceive.divide(StockExchangePlatform.BYN_TO_EUR_RATE, RoundingMode.HALF_UP);
+                    break;
+                case USD_TO_BYN:
+                    amountToReceive = amountToReceive.divide(StockExchangePlatform.USD_TO_BYN_RATE, RoundingMode.HALF_UP);
+                    break;
+                case BYN_TO_USD:
+                    amountToReceive = amountToReceive.divide(StockExchangePlatform.BYN_TO_USD_RATE, RoundingMode.HALF_UP);
+                    break;
+                case USD_TO_EUR:
+                    amountToReceive = amountToReceive.divide(StockExchangePlatform.USD_TO_EUR_RATE, RoundingMode.HALF_UP);
+                    break;
+                case EUR_TO_BYN:
+                    amountToReceive = amountToReceive.divide(StockExchangePlatform.EUR_TO_BYN_RATE, RoundingMode.HALF_UP);
+                    break;
+                case EUR_TO_USD:
+                    amountToReceive = amountToReceive.divide(StockExchangePlatform.EUR_TO_USD_RATE, RoundingMode.HALF_UP);
+                    break;
+                default:
+                    amountToReceive = BigDecimal.valueOf(0).setScale(2, RoundingMode.DOWN);
+                    break;
+            }
+            int numberOfParticipants = exchangePlatform.getParticipantsNumber();
+            int participantToExchangeWith = decisionMaker.nextInt(numberOfParticipants);
+            try {
+                exchangePlatform.validateAndPerformTransaction(this, participantToExchangeWith, transactionToMake, amountToGive, amountToReceive);
+            } catch (InterruptedException | TransactionException e) {
+                LOGGER.error(e);
+            }
+        }
     }
 
     @Override
