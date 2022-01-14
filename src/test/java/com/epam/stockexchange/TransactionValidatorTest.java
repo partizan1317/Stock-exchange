@@ -4,7 +4,6 @@ import com.epam.stockexchange.entity.Participant;
 import com.epam.stockexchange.exception.TransactionException;
 import com.epam.stockexchange.exchangesystem.TransactionType;
 import com.epam.stockexchange.exchangesystem.TransactionValidator;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;

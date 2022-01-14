@@ -41,10 +41,10 @@ public class StockExchangePlatform {
         }
     }
 
-    public boolean registerParticipant(Participant participant) {
+    public void registerParticipant(Participant participant) {
         lock.lock();
         try {
-            return participants.add(participant);
+            participants.add(participant);
         } finally {
             lock.unlock();
         }

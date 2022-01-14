@@ -3,13 +3,11 @@ package com.epam.stockexchange.entity;
 import com.epam.stockexchange.exception.TransactionException;
 import com.epam.stockexchange.exchangesystem.StockExchangePlatform;
 import com.epam.stockexchange.exchangesystem.TransactionType;
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 import java.util.Random;
 
 public class Participant implements Runnable{
@@ -19,9 +17,9 @@ public class Participant implements Runnable{
     private static final double MINIMUM_TRANSACTION_SIZE = 0.01;
 
     private int id;
-    private BigDecimal usd;
-    private BigDecimal eur;
-    private BigDecimal byn;
+    private BigDecimal usd = new BigDecimal(0).setScale(2,RoundingMode.DOWN);
+    private BigDecimal eur = new BigDecimal(0).setScale(2,RoundingMode.DOWN);
+    private BigDecimal byn = new BigDecimal(0).setScale(2,RoundingMode.DOWN);
 
     public Participant() {
     }
@@ -31,38 +29,6 @@ public class Participant implements Runnable{
         this.usd = usd.setScale(2, RoundingMode.DOWN);
         this.eur = eur.setScale(2,RoundingMode.DOWN);
         this.byn = byn.setScale(2, RoundingMode.DOWN);
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setUsd(BigDecimal usd) {
-        this.usd = usd;
-    }
-
-    public void setEur(BigDecimal eur) {
-        this.eur = eur;
-    }
-
-    public void setByn(BigDecimal byn) {
-        this.byn = byn;
-    }
-
-    public BigDecimal getUsd() {
-        return usd;
-    }
-
-    public BigDecimal getEur() {
-        return eur;
-    }
-
-    public BigDecimal getByn() {
-        return byn;
     }
 
     @Override
@@ -124,6 +90,39 @@ public class Participant implements Runnable{
                 LOGGER.error(e);
             }
         }
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public void setUsd(BigDecimal usd) {
+        this.usd = usd;
+    }
+
+    public void setEur(BigDecimal eur) {
+        this.eur = eur;
+    }
+
+    public void setByn(BigDecimal byn) {
+        this.byn = byn;
+    }
+
+    public BigDecimal getUsd() {
+        return usd;
+    }
+
+    public BigDecimal getEur() {
+        return eur;
+    }
+
+    public BigDecimal getByn() {
+        return byn;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
